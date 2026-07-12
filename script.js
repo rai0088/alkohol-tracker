@@ -1,47 +1,11 @@
-const alcoholTypes = [
-    {
-        name: "Pivo",
-        icon: "🍺",
-        defaultServing: 0.5,
-        servings: [0.3, 0.5]
-    },
-    {
-        name: "Víno",
-        icon: "🍷",
-        defaultServing: 0.2,
-        servings: [0.1, 0.2]
-    },
-    {
-        name: "Prosecco",
-        icon: "🥂",
-        defaultServing: 0.2,
-        servings: [0.1, 0.2, 0.75]
-    },
-    {
-        name: "Cider",
-        icon: "🍏",
-        defaultServing: 0.5,
-        servings: [0.33, 0.5]
-    },
-    {
-        name: "Destilát",
-        icon: "🥃",
-        defaultServing: 0.04,
-        servings: [0.02, 0.04]
-    },
-    {
-        name: "Míchaný nápoj",
-        icon: "🍹",
-        defaultServing: 0.3,
-        servings: [0.2, 0.3, 0.4]
-    },
-    {
-        name: "Jiné",
-        icon: "➕",
-        defaultServing: 0.2,
-        servings: [0.1, 0.2, 0.5]
-    }
-];
+const customAlcoholGroup =
+    document.getElementById("custom-alcohol-group");
+
+const customAlcoholNameInput =
+    document.getElementById("custom-alcohol-name");
+
+const customServingSizeInput =
+    document.getElementById("custom-serving-size");
 
 const dateInput = document.getElementById("date");
 const form = document.getElementById("alcohol-form");
@@ -53,8 +17,14 @@ const toggleNoteButton =
 const noteContainer =
     document.getElementById("note-container");
 
-const alcoholButtonsContainer =
-    document.getElementById("alcohol-buttons");
+const featuredAlcoholButtonsContainer =
+    document.getElementById("featured-alcohol-buttons");
+
+const moreAlcoholButtonsContainer =
+    document.getElementById("more-alcohol-buttons");
+
+const toggleMoreAlcoholsButton =
+    document.getElementById("toggle-more-alcohols");
 
 const servingSizeGroup =
     document.getElementById("serving-size-group");
@@ -147,6 +117,12 @@ function getAlcoholConfiguration(typeName) {
     });
 }
 
+function getCustomAlcoholConfiguration() {
+    return alcoholTypes.find(function (type) {
+        return type.custom === true;
+    });
+}
+
 function showNoteField() {
     noteContainer.classList.remove("hidden");
     toggleNoteButton.textContent = "− Skrýt poznámku";
@@ -157,22 +133,45 @@ function hideNoteField() {
     toggleNoteButton.textContent = "+ Přidat poznámku";
 }
 
+function showMoreAlcohols() {
+    moreAlcoholButtonsContainer.classList.remove("hidden");
+    toggleMoreAlcoholsButton.textContent =
+        "− Skrýt ostatní";
+}
+
+function hideMoreAlcohols() {
+    moreAlcoholButtonsContainer.classList.add("hidden");
+    toggleMoreAlcoholsButton.textContent =
+        "🍸 Ostatní";
+}
+
+function createAlcoholButton(type) {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "alcohol-choice";
+    button.dataset.type = type.name;
+    button.textContent = `${type.icon} ${type.name}`;
+
+    button.addEventListener("click", function () {
+        selectAlcoholType(type.name);
+    });
+
+    return button;
+}
+
 function renderAlcoholButtons() {
-    alcoholButtonsContainer.innerHTML = "";
+    featuredAlcoholButtonsContainer.innerHTML = "";
+    moreAlcoholButtonsContainer.innerHTML = "";
 
     alcoholTypes.forEach(function (type) {
-        const button = document.createElement("button");
+        const button = createAlcoholButton(type);
 
-        button.type = "button";
-        button.className = "alcohol-choice";
-        button.dataset.type = type.name;
-        button.textContent = `${type.icon} ${type.name}`;
-
-        button.addEventListener("click", function () {
-            selectAlcoholType(type.name);
-        });
-
-        alcoholButtonsContainer.appendChild(button);
+        if (type.featured) {
+            featuredAlcoholButtonsContainer.appendChild(button);
+        } else {
+            moreAlcoholButtonsContainer.appendChild(button);
+        }
     });
 }
 
@@ -185,7 +184,6 @@ function selectAlcoholType(typeName) {
     }
 
     selectedAlcoholType = configuration.name;
-    selectedServingSize = configuration.defaultServing;
     selectedCount = 1;
 
     document
@@ -197,7 +195,28 @@ function selectAlcoholType(typeName) {
             );
         });
 
-    renderServingSizeButtons(configuration);
+    if (configuration.custom) {
+        selectedServingSize = 0;
+
+        servingSizeGroup.classList.add("hidden");
+        servingSizeButtonsContainer.innerHTML = "";
+
+        customAlcoholGroup.classList.remove("hidden");
+        customAlcoholNameInput.value = "";
+        customServingSizeInput.value = "";
+
+        customAlcoholNameInput.focus();
+    } else {
+        selectedServingSize =
+            Number(configuration.defaultServing);
+
+        customAlcoholGroup.classList.add("hidden");
+        customAlcoholNameInput.value = "";
+        customServingSizeInput.value = "";
+
+        renderServingSizeButtons(configuration);
+    }
+
     updateAmount();
 }
 
@@ -208,13 +227,14 @@ function renderServingSizeButtons(
     servingSizeButtonsContainer.innerHTML = "";
     servingSizeGroup.classList.remove("hidden");
 
-    const servingSizes = [...configuration.servings];
+    const servingSizes =
+        configuration.servings.map(Number);
 
     if (
         additionalServingSize &&
-        !servingSizes.includes(additionalServingSize)
+        !servingSizes.includes(Number(additionalServingSize))
     ) {
-        servingSizes.push(additionalServingSize);
+        servingSizes.push(Number(additionalServingSize));
 
         servingSizes.sort(function (a, b) {
             return a - b;
@@ -231,7 +251,7 @@ function renderServingSizeButtons(
 
         button.classList.toggle(
             "selected",
-            servingSize === selectedServingSize
+            servingSize === Number(selectedServingSize)
         );
 
         button.addEventListener("click", function () {
@@ -255,10 +275,32 @@ function renderServingSizeButtons(
 function updateAmount() {
     countDisplay.textContent = selectedCount;
 
-    if (!selectedAlcoholType || !selectedServingSize) {
+    if (!selectedAlcoholType) {
         amountSummary.textContent =
             "Nejprve vyber druh alkoholu.";
+        return;
+    }
 
+    const selectedConfiguration =
+        getAlcoholConfiguration(selectedAlcoholType);
+
+    if (
+        selectedConfiguration &&
+        selectedConfiguration.custom
+    ) {
+        const customName =
+            customAlcoholNameInput.value.trim();
+
+        if (!customName || !selectedServingSize) {
+            amountSummary.textContent =
+                "Zadej název a velikost porce.";
+            return;
+        }
+    }
+
+    if (!selectedServingSize) {
+        amountSummary.textContent =
+            "Vyber velikost porce.";
         return;
     }
 
@@ -291,7 +333,12 @@ function resetForm() {
     servingSizeButtonsContainer.innerHTML = "";
     servingSizeGroup.classList.add("hidden");
 
+    customAlcoholGroup.classList.add("hidden");
+    customAlcoholNameInput.value = "";
+    customServingSizeInput.value = "";
+
     hideNoteField();
+    hideMoreAlcohols();
     updateAmount();
 }
 
@@ -360,17 +407,6 @@ function editRecord(recordId) {
         return;
     }
 
-    const configuration =
-        getAlcoholConfiguration(record.alcoholType);
-
-    if (!configuration) {
-        alert(
-            "Druh alkoholu tohoto záznamu už není v nabídce."
-        );
-
-        return;
-    }
-
     dateInput.value = record.date;
     noteInput.value = record.note || "";
 
@@ -380,26 +416,80 @@ function editRecord(recordId) {
         hideNoteField();
     }
 
-    selectedAlcoholType = record.alcoholType;
     selectedCount = Number(record.count) || 1;
 
     selectedServingSize =
         Number(record.servingSize) ||
         Number(record.amount) / selectedCount;
 
-    document
-        .querySelectorAll(".alcohol-choice")
-        .forEach(function (button) {
-            button.classList.toggle(
-                "selected",
-                button.dataset.type === record.alcoholType
-            );
-        });
+    const configuration =
+        getAlcoholConfiguration(record.alcoholType);
 
-    renderServingSizeButtons(
-        configuration,
-        selectedServingSize
-    );
+    const isCustomRecord =
+        record.isCustom === true || !configuration;
+
+    if (isCustomRecord) {
+        const customConfiguration =
+            getCustomAlcoholConfiguration();
+
+        if (!customConfiguration) {
+            alert(
+                "V seznamu chybí konfigurace pro vlastní alkohol."
+            );
+            return;
+        }
+
+        selectedAlcoholType =
+            customConfiguration.name;
+
+        customAlcoholGroup.classList.remove("hidden");
+
+        customAlcoholNameInput.value =
+            record.alcoholType;
+
+        customServingSizeInput.value =
+            selectedServingSize;
+
+        servingSizeGroup.classList.add("hidden");
+        servingSizeButtonsContainer.innerHTML = "";
+
+        showMoreAlcohols();
+
+        document
+            .querySelectorAll(".alcohol-choice")
+            .forEach(function (button) {
+                button.classList.toggle(
+                    "selected",
+                    button.dataset.type ===
+                        customConfiguration.name
+                );
+            });
+    } else {
+        selectedAlcoholType = record.alcoholType;
+
+        customAlcoholGroup.classList.add("hidden");
+        customAlcoholNameInput.value = "";
+        customServingSizeInput.value = "";
+
+        document
+            .querySelectorAll(".alcohol-choice")
+            .forEach(function (button) {
+                button.classList.toggle(
+                    "selected",
+                    button.dataset.type ===
+                        record.alcoholType
+                );
+            });
+
+        if (!configuration.featured) {
+            showMoreAlcohols();
+        }
+
+        renderServingSizeButtons(
+            configuration,
+            selectedServingSize
+        );
+    }
 
     editingRecordId = recordId;
     submitButton.textContent = "Uložit změny";
@@ -501,7 +591,7 @@ function renderRecords() {
 
             const icon = configuration
                 ? configuration.icon
-                : "";
+                : "➕";
 
             const countText = record.count
                 ? `${record.count} ks · `
@@ -601,6 +691,39 @@ toggleNoteButton.addEventListener("click", function () {
     }
 });
 
+toggleMoreAlcoholsButton.addEventListener(
+    "click",
+    function () {
+        const isHidden =
+            moreAlcoholButtonsContainer.classList.contains(
+                "hidden"
+            );
+
+        if (isHidden) {
+            showMoreAlcohols();
+        } else {
+            hideMoreAlcohols();
+        }
+    }
+);
+
+customAlcoholNameInput.addEventListener(
+    "input",
+    function () {
+        updateAmount();
+    }
+);
+
+customServingSizeInput.addEventListener(
+    "input",
+    function () {
+        selectedServingSize =
+            Number(customServingSizeInput.value) || 0;
+
+        updateAmount();
+    }
+);
+
 form.addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -609,18 +732,45 @@ form.addEventListener("submit", function (event) {
         return;
     }
 
-    if (!selectedServingSize) {
+    const selectedConfiguration =
+        getAlcoholConfiguration(selectedAlcoholType);
+
+    const isCustom =
+        selectedConfiguration &&
+        selectedConfiguration.custom === true;
+
+    let finalAlcoholType = selectedAlcoholType;
+
+    if (isCustom) {
+        const customName =
+            customAlcoholNameInput.value.trim();
+
+        if (!customName) {
+            alert("Zadej název alkoholu.");
+            customAlcoholNameInput.focus();
+            return;
+        }
+
+        if (!selectedServingSize) {
+            alert("Zadej velikost porce.");
+            customServingSizeInput.focus();
+            return;
+        }
+
+        finalAlcoholType = customName;
+    } else if (!selectedServingSize) {
         alert("Vyber velikost porce.");
         return;
     }
 
     const recordData = {
         date: dateInput.value,
-        alcoholType: selectedAlcoholType,
+        alcoholType: finalAlcoholType,
         count: selectedCount,
         servingSize: selectedServingSize,
         amount: selectedCount * selectedServingSize,
-        note: noteInput.value.trim()
+        note: noteInput.value.trim(),
+        isCustom: isCustom
     };
 
     if (editingRecordId !== null) {
@@ -650,6 +800,8 @@ form.addEventListener("submit", function (event) {
 renderAlcoholButtons();
 setTodayDate();
 hideNoteField();
+hideMoreAlcohols();
+customAlcoholGroup.classList.add("hidden");
 updateAmount();
 renderRecords();
 renderStatistics();

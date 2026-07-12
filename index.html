@@ -41,8 +41,21 @@
                     <label>Druh alkoholu</label>
 
                     <div
-                        id="alcohol-buttons"
+                        id="featured-alcohol-buttons"
                         class="alcohol-buttons"
+                    ></div>
+
+                    <button
+                        type="button"
+                        id="toggle-more-alcohols"
+                        class="secondary-button more-button"
+                    >
+                        ➕ Více nápojů
+                    </button>
+
+                    <div
+                        id="more-alcohol-buttons"
+                        class="alcohol-buttons hidden"
                     ></div>
                 </div>
 
@@ -57,7 +70,32 @@
                         class="serving-size-buttons"
                     ></div>
                 </div>
+                <div
+                    id="custom-alcohol-group"
+                    class="form-group hidden"
+                >
+                    <label for="custom-alcohol-name">
+                        Název alkoholu
+                    </label>
 
+                    <input
+                        type="text"
+                        id="custom-alcohol-name"
+                        placeholder="Například Becherovka"
+                    >
+
+                    <label for="custom-serving-size">
+                        Velikost jedné porce v litrech
+                    </label>
+
+                    <input
+                        type="number"
+                        id="custom-serving-size"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="Například 0,04"
+                    >
+                </div>
                 <div class="form-group">
                     <label>Počet kusů</label>
 
@@ -162,6 +200,7 @@
 
     </main>
 
+    <script src="alcohols.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
