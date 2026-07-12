@@ -9,7 +9,7 @@ const alcoholTypes = [
         name: "Víno",
         icon: "🍷",
         defaultServing: 0.2,
-        servings: [0.1, 0.2, 0.75]
+        servings: [0.1, 0.2]
     },
     {
         name: "Prosecco",
@@ -33,7 +33,7 @@ const alcoholTypes = [
         name: "Míchaný nápoj",
         icon: "🍹",
         defaultServing: 0.3,
-        servings: [0.2, 0.3, 0.5]
+        servings: [0.2, 0.3, 0.4]
     },
     {
         name: "Jiné",
@@ -46,6 +46,12 @@ const alcoholTypes = [
 const dateInput = document.getElementById("date");
 const form = document.getElementById("alcohol-form");
 const noteInput = document.getElementById("note");
+
+const toggleNoteButton =
+    document.getElementById("toggle-note");
+
+const noteContainer =
+    document.getElementById("note-container");
 
 const alcoholButtonsContainer =
     document.getElementById("alcohol-buttons");
@@ -141,6 +147,16 @@ function getAlcoholConfiguration(typeName) {
     });
 }
 
+function showNoteField() {
+    noteContainer.classList.remove("hidden");
+    toggleNoteButton.textContent = "− Skrýt poznámku";
+}
+
+function hideNoteField() {
+    noteContainer.classList.add("hidden");
+    toggleNoteButton.textContent = "+ Přidat poznámku";
+}
+
 function renderAlcoholButtons() {
     alcoholButtonsContainer.innerHTML = "";
 
@@ -199,6 +215,7 @@ function renderServingSizeButtons(
         !servingSizes.includes(additionalServingSize)
     ) {
         servingSizes.push(additionalServingSize);
+
         servingSizes.sort(function (a, b) {
             return a - b;
         });
@@ -274,6 +291,7 @@ function resetForm() {
     servingSizeButtonsContainer.innerHTML = "";
     servingSizeGroup.classList.add("hidden");
 
+    hideNoteField();
     updateAmount();
 }
 
@@ -355,6 +373,12 @@ function editRecord(recordId) {
 
     dateInput.value = record.date;
     noteInput.value = record.note || "";
+
+    if (record.note) {
+        showNoteField();
+    } else {
+        hideNoteField();
+    }
 
     selectedAlcoholType = record.alcoholType;
     selectedCount = Number(record.count) || 1;
@@ -565,6 +589,18 @@ increaseCountButton.addEventListener(
     }
 );
 
+toggleNoteButton.addEventListener("click", function () {
+    const isHidden =
+        noteContainer.classList.contains("hidden");
+
+    if (isHidden) {
+        showNoteField();
+        noteInput.focus();
+    } else {
+        hideNoteField();
+    }
+});
+
 form.addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -613,6 +649,7 @@ form.addEventListener("submit", function (event) {
 
 renderAlcoholButtons();
 setTodayDate();
+hideNoteField();
 updateAmount();
 renderRecords();
 renderStatistics();
