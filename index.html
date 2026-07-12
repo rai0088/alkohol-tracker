@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Alkohol Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="app-container">
+
+        <header class="app-header">
+            <h1>Alkohol Tracker</h1>
+            <p>Jednoduchý přehled vypitého alkoholu</p>
+        </header>
+
+        <section class="card">
+            <h2>Přidat záznam</h2>
+
+            <form id="alcohol-form">
+
+                <div class="form-group">
+                    <label for="date">Datum</label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Druh alkoholu</label>
+
+                    <div
+                        id="alcohol-buttons"
+                        class="alcohol-buttons"
+                    ></div>
+                </div>
+
+                <div
+                    id="serving-size-group"
+                    class="form-group hidden"
+                >
+                    <label>Velikost jedné porce</label>
+
+                    <div
+                        id="serving-size-buttons"
+                        class="serving-size-buttons"
+                    ></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Počet kusů</label>
+
+                    <div class="quantity-control">
+                        <button
+                            type="button"
+                            id="decrease-count"
+                            aria-label="Snížit počet"
+                        >
+                            −
+                        </button>
+
+                        <strong id="count-display">1</strong>
+
+                        <button
+                            type="button"
+                            id="increase-count"
+                            aria-label="Zvýšit počet"
+                        >
+                            +
+                        </button>
+                    </div>
+
+                    <p id="amount-summary" class="amount-summary">
+                        Nejprve vyber druh alkoholu.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="note">Poznámka</label>
+
+                    <textarea
+                        id="note"
+                        name="note"
+                        rows="3"
+                        placeholder="Nepovinná poznámka"
+                    ></textarea>
+                </div>
+
+                <button type="submit">
+                    Uložit záznam
+                </button>
+
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Záznamy</h2>
+
+            <p id="empty-message">
+                Zatím nemáš žádné záznamy.
+            </p>
+
+            <div id="records-list"></div>
+        </section>
+
+        <section class="card">
+            <h2>Základní statistiky</h2>
+
+            <div class="statistics">
+                <div class="statistic">
+                    <span>Počet záznamů</span>
+                    <strong id="total-records">0</strong>
+                </div>
+
+                <div class="statistic">
+                    <span>Celkové množství</span>
+                    <strong id="total-amount">0 l</strong>
+                </div>
+
+                <div class="statistic">
+                    <span>Počet dnů s alkoholem</span>
+                    <strong id="total-days">0</strong>
+                </div>
+
+                <div class="statistic">
+                    <span>Záznamů tento měsíc</span>
+                    <strong id="month-records">0</strong>
+                </div>
+
+                <div class="statistic">
+                    <span>Množství tento měsíc</span>
+                    <strong id="month-amount">0 l</strong>
+                </div>
+
+                <div class="statistic">
+                    <span>Dnů s alkoholem tento měsíc</span>
+                    <strong id="month-days">0</strong>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

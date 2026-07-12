@@ -1,0 +1,294 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    color: #222;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.app-header h1 {
+    margin-bottom: 8px;
+    font-size: 28px;
+}
+
+.app-header p {
+    margin: 0;
+    color: #666;
+}
+
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+input,
+select,
+textarea,
+button {
+    width: 100%;
+    font: inherit;
+}
+
+input,
+select,
+textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: white;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #444;
+}
+
+.statistics {
+    display: grid;
+    gap: 12px;
+}
+
+.statistic {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px;
+    background: #f7f7f7;
+    border-radius: 10px;
+}
+
+.statistic span {
+    color: #555;
+}
+
+#empty-message {
+    color: #777;
+    text-align: center;
+}
+
+.record-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.record-item:last-child {
+    border-bottom: none;
+}
+
+.record-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+.record-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.record-note {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #444;
+}
+
+.record-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.edit-button,
+.delete-button {
+    width: auto;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.edit-button {
+    background: #555;
+}
+
+.edit-button:hover {
+    background: #333;
+}
+
+.delete-button {
+    background: #b42318;
+}
+
+.delete-button:hover {
+    background: #8f1c13;
+}
+
+.month-section {
+    margin-bottom: 24px;
+}
+
+.month-section:last-child {
+    margin-bottom: 0;
+}
+
+.month-title {
+    margin: 4px 0 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #222;
+    font-size: 18px;
+}
+
+.alcohol-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.alcohol-choice {
+    padding: 11px 8px;
+    background: #eeeeee;
+    color: #222;
+    border: 2px solid transparent;
+}
+
+.alcohol-choice:hover {
+    background: #dddddd;
+}
+
+.alcohol-choice.selected {
+    background: #222;
+    color: white;
+    border-color: #222;
+}
+
+@media (min-width: 500px) {
+    .alcohol-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.alcohol-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.alcohol-choice {
+    padding: 11px 8px;
+    background: #eeeeee;
+    color: #222;
+    border: 2px solid transparent;
+}
+
+.alcohol-choice:hover {
+    background: #dddddd;
+}
+
+.alcohol-choice.selected {
+    background: #222;
+    color: white;
+    border-color: #222;
+}
+
+@media (min-width: 500px) {
+    .alcohol-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.quantity-control {
+    display: grid;
+    grid-template-columns: 56px 1fr 56px;
+    align-items: center;
+    gap: 12px;
+}
+
+.quantity-control button {
+    padding: 10px;
+    font-size: 24px;
+}
+
+#count-display {
+    text-align: center;
+    font-size: 26px;
+}
+
+.amount-summary {
+    margin: 10px 0 0;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+.serving-size-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.serving-size-choice {
+    padding: 11px 8px;
+    background: #eeeeee;
+    color: #222;
+    border: 2px solid transparent;
+}
+
+.serving-size-choice:hover {
+    background: #dddddd;
+}
+
+.serving-size-choice.selected {
+    background: #222;
+    color: white;
+    border-color: #222;
+}
