@@ -51,45 +51,67 @@ async function exportRecords(records) {
         }
     );
 
-    try {
-        if (
-            navigator.share &&
-            navigator.canShare &&
-            navigator.canShare({ files: [file] })
-        ) {
+    if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+    ) {
+        try {
             await navigator.share({
                 title: "Záloha Alkohol Tracker",
-                text: "Záloha záznamů z aplikace Alkohol Tracker.",
                 files: [file]
             });
 
             return;
+        } catch (error) {
+            if (error.name === "AbortError") {
+                return;
+            }
+
+            console.warn(
+                "Sdílení selhalo, zkouším stažení souboru.",
+                error
+            );
         }
+    }
+
+    try {
+        const blob = new Blob(
+            [fileContent],
+            {
+                type: "application/json;charset=utf-8"
+            }
+        );
 
         const downloadUrl =
-            URL.createObjectURL(file);
+            URL.createObjectURL(blob);
 
         const downloadLink =
             document.createElement("a");
 
         downloadLink.href = downloadUrl;
         downloadLink.download = fileName;
+        downloadLink.style.display = "none";
 
         document.body.appendChild(downloadLink);
         downloadLink.click();
         downloadLink.remove();
 
-        URL.revokeObjectURL(downloadUrl);
-    } catch (error) {
-        if (error.name !== "AbortError") {
-            console.error(
-                "Zálohu se nepodařilo vytvořit:",
-                error
-            );
+        setTimeout(function () {
+            URL.revokeObjectURL(downloadUrl);
+        }, 1000);
 
-            alert(
-                "Zálohu se nepodařilo vytvořit."
-            );
-        }
+        alert(
+            "Záloha byla vytvořena. Zkontroluj složku Stažené soubory."
+        );
+    } catch (error) {
+        console.error(
+            "Zálohu se nepodařilo vytvořit:",
+            error
+        );
+
+        alert(
+            "Zálohu se nepodařilo vytvořit."
+        );
     }
 }
