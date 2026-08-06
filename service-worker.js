@@ -1,4 +1,4 @@
-const CACHE_NAME = "alkohol-tracker-v6";
+const CACHE_NAME = "alkohol-tracker-v7";
 
 const APP_FILES = [
     "./",

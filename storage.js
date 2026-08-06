@@ -26,51 +26,14 @@ function saveRecords(records) {
     );
 }
 
-async function exportRecords(records) {
+function createBackupText(records) {
     const backup = {
         application: "Alkohol Tracker",
+        version: 1,
         exportedAt: new Date().toISOString(),
         recordCount: records.length,
         records: records
     };
 
-    const backupText = JSON.stringify(backup, null, 2);
-
-    try {
-        await navigator.clipboard.writeText(backupText);
-
-        alert(
-            `Záloha ${records.length} záznamů byla zkopírována do schránky. ` +
-            "Vlož ji nyní do poznámky, e-mailu nebo textového souboru."
-        );
-    } catch (error) {
-        console.error("Kopírování zálohy selhalo:", error);
-
-        const backupWindow = window.open("", "_blank");
-
-        if (!backupWindow) {
-            alert(
-                "Zálohu se nepodařilo otevřít. Povol v prohlížeči vyskakovací okna."
-            );
-            return;
-        }
-
-        backupWindow.document.write(`
-            <html lang="cs">
-                <head>
-                    <title>Záloha Alkohol Tracker</title>
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                </head>
-                <body>
-                    <h1>Záloha Alkohol Tracker</h1>
-                    <p>Označ celý text, zkopíruj ho a bezpečně ulož.</p>
-                    <textarea
-                        style="width: 100%; height: 75vh;"
-                    >${backupText.replace(/</g, "&lt;")}</textarea>
-                </body>
-            </html>
-        `);
-
-        backupWindow.document.close();
-    }
+    return JSON.stringify(backup, null, 2);
 }

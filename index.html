@@ -204,13 +204,56 @@
         <section class="card">
             <h2>Záloha dat</h2>
 
+            <p class="backup-help">
+                Zobraz zálohu a ulož ji mimo aplikaci, například do poznámky nebo na cloud.
+            </p>
+
             <button
                 id="export-button"
                 type="button"
                 class="secondary-button"
             >
-                💾 Zálohovat data
+                💾 Zobrazit zálohu
             </button>
+
+            <div id="backup-panel" class="backup-panel hidden">
+                <p id="backup-summary" class="backup-summary"></p>
+
+                <textarea
+                    id="backup-text"
+                    class="backup-text"
+                    readonly
+                    aria-label="Text zálohy"
+                ></textarea>
+
+                <div class="backup-actions">
+                    <button
+                        id="select-backup-button"
+                        type="button"
+                        class="secondary-button"
+                    >
+                        Označit vše
+                    </button>
+
+                    <button
+                        id="copy-backup-button"
+                        type="button"
+                        class="secondary-button"
+                    >
+                        Kopírovat
+                    </button>
+
+                    <button
+                        id="close-backup-button"
+                        type="button"
+                        class="secondary-button"
+                    >
+                        Zavřít zálohu
+                    </button>
+                </div>
+
+                <p id="backup-message" class="backup-message" aria-live="polite"></p>
+            </div>
         </section>
 
     </main>

@@ -337,3 +337,44 @@ button:hover {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
+
+.backup-help {
+    margin: 0 0 12px;
+    color: #aab2c0;
+    line-height: 1.5;
+}
+
+.backup-panel {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid #303846;
+    border-radius: 12px;
+    background: #111722;
+}
+
+.backup-summary {
+    margin: 0 0 10px;
+    font-weight: 700;
+}
+
+.backup-text {
+    width: 100%;
+    min-height: 260px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.45;
+    resize: vertical;
+}
+
+.backup-actions {
+    display: grid;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.backup-message {
+    min-height: 1.4em;
+    margin: 10px 0 0;
+    color: #ffc107;
+    line-height: 1.45;
+}
