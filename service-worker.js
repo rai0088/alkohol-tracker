@@ -1,4 +1,4 @@
-const CACHE_NAME = "alkohol-tracker-v4";
+const CACHE_NAME = "alkohol-tracker-v5";
 
 const APP_FILES = [
     "./",
@@ -46,13 +46,40 @@ self.addEventListener("activate", function (event) {
 });
 
 self.addEventListener("fetch", function (event) {
-    if (event.request.method !== "GET") {
+    if (event.request.mode === "navigate") {
+        event.respondWith(
+            fetch(event.request)
+                .then(function (response) {
+                    const responseCopy = response.clone();
+
+                    caches.open(CACHE_NAME).then(function (cache) {
+                        cache.put(event.request, responseCopy);
+                    });
+
+                    return response;
+                })
+                .catch(function () {
+                    return caches.match("./index.html");
+                })
+        );
+
         return;
     }
 
     event.respondWith(
         caches.match(event.request).then(function (cachedResponse) {
-            return cachedResponse || fetch(event.request);
+            return (
+                cachedResponse ||
+                fetch(event.request).then(function (response) {
+                    const responseCopy = response.clone();
+
+                    caches.open(CACHE_NAME).then(function (cache) {
+                        cache.put(event.request, responseCopy);
+                    });
+
+                    return response;
+                })
+            );
         })
     );
 });
