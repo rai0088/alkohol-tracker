@@ -1,4 +1,4 @@
-const CACHE_NAME = "alkohol-tracker-v5";
+const CACHE_NAME = "alkohol-tracker-v6";
 
 const APP_FILES = [
     "./",
@@ -28,58 +28,45 @@ self.addEventListener("install", function (event) {
 
 self.addEventListener("activate", function (event) {
     event.waitUntil(
-        Promise.all([
-            caches.keys().then(function (cacheNames) {
-                return Promise.all(
-                    cacheNames
-                        .filter(function (cacheName) {
-                            return cacheName !== CACHE_NAME;
-                        })
-                        .map(function (cacheName) {
-                            return caches.delete(cacheName);
-                        })
-                );
-            }),
-            self.clients.claim()
-        ])
+        caches.keys().then(function (cacheNames) {
+            return Promise.all(
+                cacheNames
+                    .filter(function (cacheName) {
+                        return cacheName !== CACHE_NAME;
+                    })
+                    .map(function (cacheName) {
+                        return caches.delete(cacheName);
+                    })
+            );
+        })
     );
+
+    self.clients.claim();
 });
 
 self.addEventListener("fetch", function (event) {
-    if (event.request.mode === "navigate") {
-        event.respondWith(
-            fetch(event.request)
-                .then(function (response) {
-                    const responseCopy = response.clone();
-
-                    caches.open(CACHE_NAME).then(function (cache) {
-                        cache.put(event.request, responseCopy);
-                    });
-
-                    return response;
-                })
-                .catch(function () {
-                    return caches.match("./index.html");
-                })
-        );
-
+    if (
+        event.request.method !== "GET" ||
+        new URL(event.request.url).origin !== self.location.origin
+    ) {
         return;
     }
 
     event.respondWith(
-        caches.match(event.request).then(function (cachedResponse) {
-            return (
-                cachedResponse ||
-                fetch(event.request).then(function (response) {
-                    const responseCopy = response.clone();
+        fetch(event.request)
+            .then(function (response) {
+                const responseCopy = response.clone();
 
-                    caches.open(CACHE_NAME).then(function (cache) {
-                        cache.put(event.request, responseCopy);
-                    });
+                caches.open(CACHE_NAME).then(function (cache) {
+                    cache.put(event.request, responseCopy);
+                });
 
-                    return response;
-                })
-            );
-        })
+                return response;
+            })
+            .catch(function () {
+                return caches.match(event.request).then(function (cachedResponse) {
+                    return cachedResponse || caches.match("./index.html");
+                });
+            })
     );
 });
