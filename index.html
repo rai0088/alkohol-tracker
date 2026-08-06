@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="style.css">
 
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#222222">
+    <meta name="theme-color" content="#0d1117">
 </head>
 
 <body>
@@ -156,7 +156,7 @@
         </section>
 
         <section class="card">
-            <h2>Záznamy</h2>
+            <h2>Měsíční přehled</h2>
 
             <p id="empty-message">
                 Zatím nemáš žádné záznamy.
@@ -204,7 +204,12 @@
     </main>
 
     <script src="alcohols.js"></script>
-    <script src="script.js"></script>
+    <script src="storage.js"></script>
+    <script src="statistics.js"></script>
+    <script src="ui.js"></script>
+    <script src="records.js"></script>
+    <script src="form.js"></script>
+    <script src="app.js"></script>
     <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", function () {
