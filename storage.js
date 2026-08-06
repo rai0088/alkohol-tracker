@@ -34,84 +34,43 @@ async function exportRecords(records) {
         records: records
     };
 
-    const fileContent = JSON.stringify(backup, null, 2);
-
-    const today = new Date()
-        .toISOString()
-        .slice(0, 10);
-
-    const fileName =
-        `alkohol-tracker-zaloha-${today}.json`;
-
-    const file = new File(
-        [fileContent],
-        fileName,
-        {
-            type: "application/json"
-        }
-    );
-
-    if (
-        navigator.share &&
-        navigator.canShare &&
-        navigator.canShare({ files: [file] })
-    ) {
-        try {
-            await navigator.share({
-                title: "Záloha Alkohol Tracker",
-                files: [file]
-            });
-
-            return;
-        } catch (error) {
-            if (error.name === "AbortError") {
-                return;
-            }
-
-            console.warn(
-                "Sdílení selhalo, zkouším stažení souboru.",
-                error
-            );
-        }
-    }
+    const backupText = JSON.stringify(backup, null, 2);
 
     try {
-        const blob = new Blob(
-            [fileContent],
-            {
-                type: "application/json;charset=utf-8"
-            }
-        );
-
-        const downloadUrl =
-            URL.createObjectURL(blob);
-
-        const downloadLink =
-            document.createElement("a");
-
-        downloadLink.href = downloadUrl;
-        downloadLink.download = fileName;
-        downloadLink.style.display = "none";
-
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        downloadLink.remove();
-
-        setTimeout(function () {
-            URL.revokeObjectURL(downloadUrl);
-        }, 1000);
+        await navigator.clipboard.writeText(backupText);
 
         alert(
-            "Záloha byla vytvořena. Zkontroluj složku Stažené soubory."
+            `Záloha ${records.length} záznamů byla zkopírována do schránky. ` +
+            "Vlož ji nyní do poznámky, e-mailu nebo textového souboru."
         );
     } catch (error) {
-        console.error(
-            "Zálohu se nepodařilo vytvořit:",
-            error
-        );
+        console.error("Kopírování zálohy selhalo:", error);
 
-        alert(
-            "Zálohu se nepodařilo vytvořit."
-        );
+        const backupWindow = window.open("", "_blank");
+
+        if (!backupWindow) {
+            alert(
+                "Zálohu se nepodařilo otevřít. Povol v prohlížeči vyskakovací okna."
+            );
+            return;
+        }
+
+        backupWindow.document.write(`
+            <html lang="cs">
+                <head>
+                    <title>Záloha Alkohol Tracker</title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                </head>
+                <body>
+                    <h1>Záloha Alkohol Tracker</h1>
+                    <p>Označ celý text, zkopíruj ho a bezpečně ulož.</p>
+                    <textarea
+                        style="width: 100%; height: 75vh;"
+                    >${backupText.replace(/</g, "&lt;")}</textarea>
+                </body>
+            </html>
+        `);
+
+        backupWindow.document.close();
     }
 }
