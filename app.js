@@ -61,3 +61,10 @@ function deleteRecord(recordId) {
 
 formController = createFormController(saveRecord);
 refreshApplication();
+
+const exportButton =
+    document.getElementById("export-button");
+
+exportButton.addEventListener("click", function () {
+    exportRecords(records);
+});
